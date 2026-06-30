@@ -1,1 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trasporto Pubblico Bagheria Estate 2026</title>
 
+  <link rel="stylesheet" href="css/style.css"/>
+
+  <!-- Leaflet (mappa) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    🚌 TPL Bagheria <span>Estate 2026</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>Trasporto Pubblico Bagheria</h1>
+    <p class="subtitle">Servizio estivo valido fino a Settembre 2026</p>
+
+    <input type="text" placeholder="Cerca linea o fermata..." id="searchBox"/>
+  </section>
+
+  <section class="menu">
+    <div class="card">🚌 Linee</div>
+    <div class="card">📍 Fermate</div>
+    <div class="card">🗺️ Mappa</div>
+    <div class="card">🕒 Orari</div>
+  </section>
+
+  <section class="map-section">
+    <h2>Mappa</h2>
+    <div id="map"></div>
+  </section>
+
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
