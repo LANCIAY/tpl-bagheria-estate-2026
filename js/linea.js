@@ -6,29 +6,23 @@ let fermateData = [];
 let orariData = {};
 let percorsiData = {};
 
-fetch("data/linee.json")
-  .then(r => r.json())
-  .then(data => {
-    lineeData = data;
-    return fetch("data/fermate.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    fermateData = data;
-    return fetch("data/orari.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    orariData = data;
-    return fetch("data/percorsi.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    percorsiData = data;
-    init();
-  });
+Promise.all([
+  fetch("data/linee.json").then(r => r.json()),
+  fetch("data/fermate.json").then(r => r.json()),
+  fetch("data/orari.json").then(r => r.json()),
+  fetch("data/percorsi.json").then(r => r.json())
+]).then(([linee, fermate, orari, percorsi]) => {
+
+  lineeData = linee;
+  fermateData = fermate;
+  orariData = orari;
+  percorsiData = percorsi;
+
+  init();
+});
 
 function init() {
+
   const linea = lineeData.find(l => l.id === id);
   if (!linea) return;
 
@@ -42,7 +36,7 @@ function init() {
     attribution: '&copy; OpenStreetMap'
   }).addTo(map);
 
-  // 🚏 FERMA TE LINEA
+  // 🚏 FERMA TE
   let fermateLinea = fermateData
     .filter(f => f.linee && f.linee[id] !== undefined)
     .sort((a, b) => a.linee[id] - b.linee[id]);
@@ -57,13 +51,12 @@ function init() {
           Dettagli fermata
         </button>
       `);
-
   });
 
-  // 🟦 PERCORSO LINEA
+  // 🟦 PERCORSO
   const coords = percorsiData[id];
 
-  if (coords && coords.length > 0) {
+  if (coords) {
     L.polyline(coords, {
       color: linea.colore || "blue",
       weight: 4
@@ -75,7 +68,7 @@ function init() {
 
   const main = document.querySelector("main");
 
-  const old = document.getElementById("orariBox");
+  let old = document.getElementById("orariBox");
   if (old) old.remove();
 
   const orariBox = document.createElement("div");
@@ -89,6 +82,7 @@ function init() {
 }
 
 window.showFermata = function(id) {
+
   const fermata = fermateData.find(f => f.id == id);
   if (!fermata) return;
 
