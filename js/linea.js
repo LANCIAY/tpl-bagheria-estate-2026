@@ -45,13 +45,21 @@ function init() {
   });
 
   // 🕒 ORARI
-  const orari = orariData[id] || [];
-  const orariBox = document.createElement("div");
-  orariBox.innerHTML = `
-    <h3>Orari</h3>
-    <p>${orari.join(" • ")}</p>
-  `;
-  document.querySelector("main").appendChild(orariBox);
+const main = document.querySelector("main");
+
+// ❗ elimina eventuali orari già presenti
+const old = document.getElementById("orariBox");
+if (old) old.remove();
+
+// crea nuovo blocco
+const orariBox = document.createElement("div");
+orariBox.id = "orariBox";
+orariBox.innerHTML = `
+  <h3>Orari</h3>
+  <p>${orari.join(" • ")}</p>
+`;
+
+main.appendChild(orariBox);
 
   // 🗺️ MAPPA CON PERCORSO
   const map = L.map('map').setView([38.079, 13.510], 13);
