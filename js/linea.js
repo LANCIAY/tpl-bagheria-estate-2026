@@ -38,12 +38,18 @@ function init() {
   // ordiniamo per posizione nella linea
   fermateLinea.sort((a, b) => a.linee[id] - b.linee[id]);
 
-  fermateLinea.forEach(f => {
-    const li = document.createElement("li");
-    li.innerText = f.nome;
-    fermateList.appendChild(li);
-  });
+  fermateLinea.forEach((f) => {
 
+  L.marker([f.lat, f.lng])
+    .addTo(map)
+    .bindPopup(`
+      <b>${f.nome}</b><br/>
+      <button onclick="showFermata('${f.id}')">
+        Dettagli fermata
+      </button>
+    `);
+
+});
   // 🕒 ORARI
 const main = document.querySelector("main");
 
