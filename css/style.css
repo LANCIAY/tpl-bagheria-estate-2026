@@ -72,3 +72,11 @@ header {
   gap: 10px;
   padding: 20px;
 }
+
+li {
+  padding: 6px;
+  background: white;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  list-style: none;
+}
