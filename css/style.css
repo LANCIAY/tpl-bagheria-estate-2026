@@ -65,3 +65,10 @@ header {
   height: 300px;
   border-radius: 10px;
 }
+
+.linee {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 20px;
+}
