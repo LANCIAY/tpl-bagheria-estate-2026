@@ -1,1 +1,20 @@
-
+[
+  {
+    "id": "1",
+    "nome": "Linea 1",
+    "colore": "#1e3a8a",
+    "capolinea": "Bagheria - Aspra"
+  },
+  {
+    "id": "2",
+    "nome": "Linea 2",
+    "colore": "#16a34a",
+    "capolinea": "Bagheria - Mongerbino"
+  },
+  {
+    "id": "3",
+    "nome": "Linea 3",
+    "colore": "#f59e0b",
+    "capolinea": "Circolare Centro"
+  }
+]
