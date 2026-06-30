@@ -106,3 +106,40 @@ fetch("data/linee.json")
     weight: 4
   }).addTo(map);
 }
+
+window.showFermata = function(id) {
+  const fermata = fermateData.find(f => f.id == id);
+  if (!fermata) return;
+
+  const lineeAttive = Object.keys(fermata.linee || {});
+
+  let html = `
+    <div id="popupFermata" style="
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:white;
+      padding:15px;
+      border-top:2px solid #ccc;
+      z-index:9999;
+    ">
+      <h3>📍 ${fermata.nome}</h3>
+      <p><b>Linee che passano:</b></p>
+      <ul>
+  `;
+
+  lineeAttive.forEach(l => {
+    html += `<li>🚌 Linea ${l}</li>`;
+  });
+
+  html += `
+      </ul>
+      <button onclick="document.getElementById('popupFermata').remove()">
+        Chiudi
+      </button>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", html);
+};
