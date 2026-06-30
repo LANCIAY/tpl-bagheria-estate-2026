@@ -11,49 +11,50 @@ Promise.all([
   fetch("data/fermate.json").then(r => r.json()),
   fetch("data/orari.json").then(r => r.json()),
   fetch("data/percorsi.json").then(r => r.json())
-]).then(([linee, fermate, orari, percorsi]) => {
+])
+.then(([linee, fermate, orari, percorsi]) => {
 
   lineeData = linee;
   fermateData = fermate;
   orariData = orari;
   percorsiData = percorsi;
 
-  init();
+  start();
+})
+.catch(err => {
+  console.error("Errore caricamento dati:", err);
 });
 
-function init() {
+function start() {
 
   const linea = lineeData.find(l => l.id === id);
-  if (!linea) return;
+  if (!linea) {
+    console.error("Linea non trovata:", id);
+    return;
+  }
 
   document.getElementById("nomeLinea").innerText = linea.nome;
   document.getElementById("capolinea").innerText = linea.capolinea;
 
-  // 🗺️ MAPPA
+  // MAPPA
   const map = L.map('map').setView([38.079, 13.510], 13);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
   }).addTo(map);
 
-  // 🚏 FERMA TE
-  let fermateLinea = fermateData
-    .filter(f => f.linee && f.linee[id] !== undefined)
-    .sort((a, b) => a.linee[id] - b.linee[id]);
+  // FERAMTE
+  let fermateLinea = fermateData.filter(f =>
+    f.linee && f.linee[id] !== undefined
+  );
 
-  fermateLinea.forEach((f) => {
-
+  fermateLinea.forEach(f => {
     L.marker([f.lat, f.lng])
       .addTo(map)
-      .bindPopup(`
-        <b>${f.nome}</b><br/>
-        <button onclick="showFermata('${f.id}')">
-          Dettagli fermata
-        </button>
-      `);
+      .bindPopup(f.nome);
   });
 
-  // 🟦 PERCORSO
+  // PERCORSO
   const coords = percorsiData[id];
 
   if (coords) {
@@ -63,7 +64,7 @@ function init() {
     }).addTo(map);
   }
 
-  // 🕒 ORARI
+  // ORARI
   const orari = orariData[id] || [];
 
   const main = document.querySelector("main");
@@ -71,50 +72,19 @@ function init() {
   let old = document.getElementById("orariBox");
   if (old) old.remove();
 
-  const orariBox = document.createElement("div");
-  orariBox.id = "orariBox";
-  orariBox.innerHTML = `
+  const box = document.createElement("div");
+  box.id = "orariBox";
+  box.innerHTML = `
     <h3>Orari</h3>
     <p>${orari.join(" • ")}</p>
   `;
 
-  main.appendChild(orariBox);
+  main.appendChild(box);
 }
 
 window.showFermata = function(id) {
+  const f = fermateData.find(x => x.id == id);
+  if (!f) return;
 
-  const fermata = fermateData.find(f => f.id == id);
-  if (!fermata) return;
-
-  const lineeAttive = Object.keys(fermata.linee || {});
-
-  let html = `
-    <div id="popupFermata" style="
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:white;
-      padding:15px;
-      border-top:2px solid #ccc;
-      z-index:9999;
-    ">
-      <h3>📍 ${fermata.nome}</h3>
-      <p><b>Linee che passano:</b></p>
-      <ul>
-  `;
-
-  lineeAttive.forEach(l => {
-    html += `<li>🚌 Linea ${l}</li>`;
-  });
-
-  html += `
-      </ul>
-      <button onclick="document.getElementById('popupFermata').remove()">
-        Chiudi
-      </button>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML("beforeend", html);
+  alert(f.nome);
 };
