@@ -48,6 +48,8 @@ function start() {
     f.linee && f.linee[id] !== undefined
   );
 
+const map = L.map('map').setView([38.079, 13.510], 13);
+  
   fermateLinea.forEach(f => {
     L.marker([f.lat, f.lng])
       .addTo(map)
