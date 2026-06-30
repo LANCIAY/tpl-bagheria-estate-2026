@@ -1,15 +1,15 @@
 [
   {
     "id": "1",
-    "nome": "Linea 1",
+    "nome": "Navetta Comunale",
     "colore": "#1e3a8a",
     "capolinea": "Bagheria - Aspra"
   },
   {
     "id": "2",
-    "nome": "Linea 2",
+    "nome": "Linea Bagheria-S.Flavia-Aspra",
     "colore": "#16a34a",
-    "capolinea": "Bagheria - Mongerbino"
+    "capolinea": "Bagheria-S.Flavia-Porticello-S.Elia-Aspra-Bagheria"
   },
   {
     "id": "3",
