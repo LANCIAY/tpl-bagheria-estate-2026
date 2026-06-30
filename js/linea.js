@@ -60,16 +60,8 @@ function init() {
     attribution: '&copy; OpenStreetMap'
   }).addTo(map);
 
-  let coords = [];
-
-  fermateLinea.forEach(f => {
-    coords.push([f.lat, f.lng]);
-
-    L.marker([f.lat, f.lng])
-      .addTo(map)
-      .bindPopup(f.nome);
-  });
-
+const coords = percorsiData[id];  
+  
   let percorsiData = {};
 
 fetch("data/linee.json")
