@@ -4,79 +4,7 @@ const id = params.get("id");
 let lineeData = [];
 let fermateData = [];
 let orariData = {};
-
-fetch("data/linee.json")
-  .then(r => r.json())
-  .then(data => {
-    lineeData = data;
-    return fetch("data/fermate.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    fermateData = data;
-    return fetch("data/orari.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    orariData = data;
-    init();
-  });
-
-function init() {
-  const linea = lineeData.find(l => l.id === id);
-  if (!linea) return;
-
-  document.getElementById("nomeLinea").innerText = linea.nome;
-  document.getElementById("capolinea").innerText = linea.capolinea;
-
-  const fermateList = document.getElementById("fermate");
-  fermateList.innerHTML = "";
-
-  // 🎯 filtriamo solo fermate della linea
-  let fermateLinea = fermateData.filter(f => f.linee[id] !== undefined);
-
-  // ordiniamo per posizione nella linea
-  fermateLinea.sort((a, b) => a.linee[id] - b.linee[id]);
-
-  fermateLinea.forEach((f) => {
-
-  L.marker([f.lat, f.lng])
-    .addTo(map)
-    .bindPopup(`
-      <b>${f.nome}</b><br/>
-      <button onclick="showFermata('${f.id}')">
-        Dettagli fermata
-      </button>
-    `);
-
-});
-  // 🕒 ORARI
-const main = document.querySelector("main");
-
-// ❗ elimina eventuali orari già presenti
-const old = document.getElementById("orariBox");
-if (old) old.remove();
-
-// crea nuovo blocco
-const orariBox = document.createElement("div");
-orariBox.id = "orariBox";
-orariBox.innerHTML = `
-  <h3>Orari</h3>
-  <p>${orari.join(" • ")}</p>
-`;
-
-main.appendChild(orariBox);
-
-  // 🗺️ MAPPA CON PERCORSO
-  const map = L.map('map').setView([38.079, 13.510], 13);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
-
-const coords = percorsiData[id];  
-  
-  let percorsiData = {};
+let percorsiData = {};
 
 fetch("data/linee.json")
   .then(r => r.json())
@@ -100,11 +28,64 @@ fetch("data/linee.json")
     init();
   });
 
-  // 🔵 linea sul percorso
-  L.polyline(coords, {
-    color: linea.colore,
-    weight: 4
+function init() {
+  const linea = lineeData.find(l => l.id === id);
+  if (!linea) return;
+
+  document.getElementById("nomeLinea").innerText = linea.nome;
+  document.getElementById("capolinea").innerText = linea.capolinea;
+
+  // 🗺️ MAPPA
+  const map = L.map('map').setView([38.079, 13.510], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
   }).addTo(map);
+
+  // 🚏 FERMA TE LINEA
+  let fermateLinea = fermateData
+    .filter(f => f.linee && f.linee[id] !== undefined)
+    .sort((a, b) => a.linee[id] - b.linee[id]);
+
+  fermateLinea.forEach((f) => {
+
+    L.marker([f.lat, f.lng])
+      .addTo(map)
+      .bindPopup(`
+        <b>${f.nome}</b><br/>
+        <button onclick="showFermata('${f.id}')">
+          Dettagli fermata
+        </button>
+      `);
+
+  });
+
+  // 🟦 PERCORSO LINEA
+  const coords = percorsiData[id];
+
+  if (coords && coords.length > 0) {
+    L.polyline(coords, {
+      color: linea.colore || "blue",
+      weight: 4
+    }).addTo(map);
+  }
+
+  // 🕒 ORARI
+  const orari = orariData[id] || [];
+
+  const main = document.querySelector("main");
+
+  const old = document.getElementById("orariBox");
+  if (old) old.remove();
+
+  const orariBox = document.createElement("div");
+  orariBox.id = "orariBox";
+  orariBox.innerHTML = `
+    <h3>Orari</h3>
+    <p>${orari.join(" • ")}</p>
+  `;
+
+  main.appendChild(orariBox);
 }
 
 window.showFermata = function(id) {
