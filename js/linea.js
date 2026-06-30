@@ -70,6 +70,30 @@ function init() {
       .bindPopup(f.nome);
   });
 
+  let percorsiData = {};
+
+fetch("data/linee.json")
+  .then(r => r.json())
+  .then(data => {
+    lineeData = data;
+    return fetch("data/fermate.json");
+  })
+  .then(r => r.json())
+  .then(data => {
+    fermateData = data;
+    return fetch("data/orari.json");
+  })
+  .then(r => r.json())
+  .then(data => {
+    orariData = data;
+    return fetch("data/percorsi.json");
+  })
+  .then(r => r.json())
+  .then(data => {
+    percorsiData = data;
+    init();
+  });
+
   // 🔵 linea sul percorso
   L.polyline(coords, {
     color: linea.colore,
