@@ -1,78 +1,30 @@
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Linea - TPL Bagheria</title>
+  <link rel="stylesheet" href="css/style.css">
 
-let lineeData = [];
-let fermateData = [];
-let orariData = {};
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
 
-fetch("data/linee.json")
-  .then(r => r.json())
-  .then(data => {
-    lineeData = data;
-    return fetch("data/fermate.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    fermateData = data;
-    return fetch("data/orari.json");
-  })
-  .then(r => r.json())
-  .then(data => {
-    orariData = data;
-    init();
-  });
+<header>
+  <div class="logo">🚌 Dettaglio Linea</div>
+</header>
 
-function init() {
-  const linea = lineeData.find(l => l.id === id);
-  if (!linea) return;
+<main style="padding:20px;">
+  <h2 id="nomeLinea"></h2>
+  <p id="capolinea"></p>
 
-  document.getElementById("nomeLinea").innerText = linea.nome;
-  document.getElementById("capolinea").innerText = linea.capolinea;
+  <h3>Fermate</h3>
+  <ul id="fermate"></ul>
 
-  const fermateList = document.getElementById("fermate");
-  fermateList.innerHTML = "";
+  <h3>Mappa</h3>
+  <div id="map" style="height:300px;"></div>
+</main>
 
-  // 🎯 filtriamo solo fermate della linea
-  let fermateLinea = fermateData.filter(f => f.linee[id] !== undefined);
-
-  // ordiniamo per posizione nella linea
-  fermateLinea.sort((a, b) => a.linee[id] - b.linee[id]);
-
-  fermateLinea.forEach(f => {
-    const li = document.createElement("li");
-    li.innerText = f.nome;
-    fermateList.appendChild(li);
-  });
-
-  // 🕒 ORARI
-  const orari = orariData[id] || [];
-  const orariBox = document.createElement("div");
-  orariBox.innerHTML = `
-    <h3>Orari</h3>
-    <p>${orari.join(" • ")}</p>
-  `;
-  document.querySelector("main").appendChild(orariBox);
-
-  // 🗺️ MAPPA CON PERCORSO
-  const map = L.map('map').setView([38.079, 13.510], 13);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
-
-  let coords = [];
-
-  fermateLinea.forEach(f => {
-    coords.push([f.lat, f.lng]);
-
-    L.marker([f.lat, f.lng])
-      .addTo(map)
-      .bindPopup(f.nome);
-  });
-
-  // 🔵 linea sul percorso
-  L.polyline(coords, {
-    color: linea.colore,
-    weight: 4
-  }).addTo(map);
-}
+<script src="js/linea.js"></script>
+</body>
+</html>
