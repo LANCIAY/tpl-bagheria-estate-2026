@@ -1,48 +1,52 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trasporto Pubblico Bagheria Estate 2026</title>
+<main style="padding:20px; max-width:600px; margin:auto;">
 
-  <link rel="stylesheet" href="css/style.css"/>
+  <h1>🚌 Trasporto Pubblico Bagheria</h1>
+  <p>Estate 2026</p>
 
-  <!-- Leaflet (mappa) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-</head>
+  <hr>
 
-<body>
+  <h2>🔎 Cerca una linea</h2>
+  <input id="search" placeholder="Es: Linea 1" style="width:100%; padding:10px;">
 
-<header>
-  <div class="logo">
-    🚌 TPL Bagheria <span>Estate 2026</span>
-  </div>
-</header>
-
-<main>
-
-  <section class="hero">
-    <h1>Trasporto Pubblico Bagheria</h1>
-    <p class="subtitle">Servizio estivo valido fino a Settembre 2026</p>
-
-    <input type="text" placeholder="Cerca linea o fermata..." id="searchBox"/>
-  </section>
-
-  <section class="menu">
-    <div class="card" onclick="location.href='linee.html'">🚌 Linee</div>
-    <div class="card">📍 Fermate</div>
-    <div class="card">🗺️ Mappa</div>
-    <div class="card">🕒 Orari</div>
-  </section>
-
-  <section class="map-section">
-    <h2>Mappa</h2>
-    <div id="map"></div>
-  </section>
+  <div id="linee"></div>
 
 </main>
 
-<script src="js/app.js"></script>
-</body>
-</html>
+<script>
+fetch("data/linee.json")
+  .then(r => r.json())
+  .then(data => {
+
+    const container = document.getElementById("linee");
+    const search = document.getElementById("search");
+
+    function render(filter = "") {
+      container.innerHTML = "";
+
+      data
+        .filter(l => l.nome.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(l => {
+
+          const div = document.createElement("div");
+          div.style = "padding:10px; border:1px solid #ccc; margin-top:10px; cursor:pointer;";
+
+          div.innerHTML = `
+            <b>${l.nome}</b><br>
+            <small>${l.capolinea}</small>
+          `;
+
+          div.onclick = () => {
+            window.location.href = "linea.html?id=" + l.id;
+          };
+
+          container.appendChild(div);
+        });
+    }
+
+    search.addEventListener("input", e => {
+      render(e.target.value);
+    });
+
+    render();
+  });
+</script>
